@@ -7,32 +7,41 @@ from turtle import *
 from freegames import path
 
 car = path('car.gif')
-tiles = list(range(32)) * 2
+
+# Tablero de 4x4 con 8 parejas.
+SIZE = 4
+TILE_SIZE = 100
+TOTAL = SIZE * SIZE
+PAIRS = TOTAL // 2
+
+tiles = list(range(PAIRS)) * 2
 state = {'mark': None, 'pairs': 0, 'finished': False}
-hide = [True] * 64
+hide = [True] * TOTAL
 
 
 def square(x, y):
-    """Dibuja un cuadrado blanco con borde negro en (x, y)."""
+    """Dibuja un cuadrado blanco con borde negro."""
     up()
     goto(x, y)
     down()
     color('black', 'white')
     begin_fill()
     for count in range(4):
-        forward(50)
+        forward(TILE_SIZE)
         left(90)
     end_fill()
 
 
 def index(x, y):
-    """Convierte las coordenadas (x, y) al índice de una ficha."""
-    return int((x + 200) // 50 + ((y + 200) // 50) * 8)
+    """Convierte las coordenadas al índice de una ficha."""
+    return int((x + 200) // TILE_SIZE +
+               ((y + 200) // TILE_SIZE) * SIZE)
 
 
 def xy(count):
-    """Convierte el índice de una ficha a coordenadas (x, y)."""
-    return (count % 8) * 50 - 200, (count // 8) * 50 - 200
+    """Convierte el índice de una ficha a coordenadas."""
+    return (count % SIZE) * TILE_SIZE - 200, \
+           (count // SIZE) * TILE_SIZE - 200
 
 
 def tap(x, y):
@@ -62,7 +71,7 @@ def tap(x, y):
         # Incrementa el contador al encontrar una pareja.
         state['pairs'] += 1
         print(f"Parejas descubiertas: {state['pairs']}")
-        title(f"Memory - Parejas descubiertas: {state['pairs']}/32")
+        title(f"Memory - Parejas descubiertas: {state['pairs']}/{PAIRS}")
 
         # Comprueba si todas las fichas están descubiertas.
         if not any(hide):
@@ -78,7 +87,7 @@ def draw():
     shape(car)
     stamp()
 
-    for count in range(64):
+    for count in range(TOTAL):
         if hide[count]:
             x, y = xy(count)
             square(x, y)
@@ -88,16 +97,18 @@ def draw():
     if mark is not None and hide[mark]:
         x, y = xy(mark)
         up()
-        goto(x + 2, y)
+        goto(x + TILE_SIZE / 2, y + TILE_SIZE / 4)
         color('black')
-        write(tiles[mark], font=('Arial', 30, 'normal'))
+        write(tiles[mark], align='center',
+              font=('Arial', 40, 'normal'))
 
-    # Muestra un mensaje cuando se completa el juego.
+    # Muestra un mensaje al completar el juego.
     if state['finished']:
         up()
         goto(0, -15)
         color('green')
-        write("¡Ganaste!", align='center', font=('Arial', 30, 'bold'))
+        write("¡Ganaste!", align='center',
+              font=('Arial', 30, 'bold'))
 
     update()
 
@@ -107,7 +118,7 @@ def draw():
 
 shuffle(tiles)
 setup(420, 420, 370, 0)
-title("Memory - Parejas descubiertas: 0/32")
+title(f"Memory - Parejas descubiertas: 0/{PAIRS}")
 addshape(car)
 hideturtle()
 tracer(False)
