@@ -1,12 +1,13 @@
-"""Memory, puzzle game of number pairs.
 
-Exercises:
+"""Memory, juego de memoria para encontrar parejas de números.
 
-1. Count and print how many taps occur.
-2. Decrease the number of tiles to a 4x4 grid.
-3. Detect when all tiles are revealed.
-4. Center single-digit tile.
-5. Use letters instead of tiles.
+Ejercicios:
+
+1. Contar e imprimir cuántos clics se realizan.
+2. Reducir el número de fichas a una cuadrícula de 4x4.
+3. Detectar cuando todas las fichas han sido descubiertas.
+4. Centrar los números de un solo dígito en las fichas.
+5. Utilizar letras en lugar de números.
 """
 
 from random import *
@@ -21,7 +22,7 @@ hide = [True] * 64
 
 
 def square(x, y):
-    """Draw white square with black outline at (x, y)."""
+    """Dibuja un cuadrado blanco con borde negro en (x, y)."""
     up()
     goto(x, y)
     down()
@@ -34,17 +35,17 @@ def square(x, y):
 
 
 def index(x, y):
-    """Convert (x, y) coordinates to tiles index."""
+    """Convierte las coordenadas (x, y) al índice de una ficha."""
     return int((x + 200) // 50 + ((y + 200) // 50) * 8)
 
 
 def xy(count):
-    """Convert tiles count to (x, y) coordinates."""
+    """Convierte el índice de una ficha a coordenadas (x, y)."""
     return (count % 8) * 50 - 200, (count // 8) * 50 - 200
 
 
 def tap(x, y):
-    """Update mark and hidden tiles based on tap."""
+    """Actualiza la ficha seleccionada y las fichas ocultas según el clic."""
     spot = index(x, y)
     mark = state['mark']
 
@@ -57,7 +58,7 @@ def tap(x, y):
 
 
 def draw():
-    """Draw image and tiles."""
+    """Dibuja la imagen y las fichas."""
     clear()
     goto(0, 0)
     shape(car)
