@@ -27,7 +27,7 @@ def drawo(x, y):
     color('red')
     width(5)
     up()
-    # Radio de 46 píxeles y centro aproximado de la casilla.
+    # Radio de 46 píxeles para centrar la O en la casilla.
     goto(x + 66.5, y + 20.5)
     down()
     circle(46)
@@ -40,15 +40,25 @@ def floor(value):
 
 state = {'player': 0}
 players = [drawx, drawo]
+occupied = set()  # Guarda las coordenadas de las casillas ocupadas.
 
 
 def tap(x, y):
-    """Dibuja una X o una O en la casilla seleccionada."""
+    """Dibuja una X o una O únicamente si la casilla está libre."""
     x = floor(x)
     y = floor(y)
+
+    # Evita dibujar sobre una casilla que ya fue seleccionada.
+    if (x, y) in occupied:
+        return
+
     player = state['player']
     draw = players[player]
     draw(x, y)
+
+    # Registra la casilla como ocupada.
+    occupied.add((x, y))
+
     update()
     state['player'] = not player
 
