@@ -1,15 +1,6 @@
 
 """Memory, juego de memoria para encontrar parejas de números.
 
-Ejercicios:
-
-1. Contar e imprimir cuántos clics se realizan.
-2. Reducir el número de fichas a una cuadrícula de 4x4.
-3. Detectar cuando todas las fichas han sido descubiertas.
-4. Centrar los números de un solo dígito en las fichas.
-5. Utilizar letras en lugar de números.
-"""
-
 from random import *
 from turtle import *
 
