@@ -1,5 +1,5 @@
 
-"""Juego de gato (Tic Tac Toe).
+"""Juego de gato (Tic Tac Toe)."""
 
 from turtle import *
 from freegames import line
@@ -14,17 +14,23 @@ def grid():
 
 
 def drawx(x, y):
-    """Dibuja la X del jugador."""
-    line(x, y, x + 133, y + 133)
-    line(x, y + 133, x + 133, y)
+    """Dibuja una X azul, centrada y con tamaño reducido."""
+    color('blue')
+    width(5)
+    # Margen de 20 píxeles para centrar la X en la casilla.
+    line(x + 20, y + 20, x + 113, y + 113)
+    line(x + 20, y + 113, x + 113, y + 20)
 
 
 def drawo(x, y):
-    """Dibuja la O del jugador."""
+    """Dibuja una O roja, centrada y con tamaño reducido."""
+    color('red')
+    width(5)
     up()
-    goto(x + 67, y + 5)
+    # Radio de 46 píxeles y centro aproximado de la casilla.
+    goto(x + 66.5, y + 20.5)
     down()
-    circle(62)
+    circle(46)
 
 
 def floor(value):
