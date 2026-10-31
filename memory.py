@@ -8,7 +8,7 @@ from freegames import path
 
 car = path('car.gif')
 tiles = list(range(32)) * 2
-state = {'mark': None, 'pairs': 0}
+state = {'mark': None, 'pairs': 0, 'finished': False}
 hide = [True] * 64
 
 
@@ -36,11 +36,18 @@ def xy(count):
 
 
 def tap(x, y):
-    """Actualiza la ficha seleccionada y cuenta las parejas descubiertas."""
+    """Actualiza las fichas, cuenta parejas y detecta el fin del juego."""
+    if state['finished']:
+        return
+
+    # Ignora clics fuera del tablero.
+    if not (-200 <= x < 200 and -200 <= y < 200):
+        return
+
     spot = index(x, y)
 
-    # Ignora clics fuera del tablero o sobre fichas descubiertas.
-    if spot < 0 or spot >= 64 or not hide[spot]:
+    # Ignora fichas que ya fueron descubiertas.
+    if not hide[spot]:
         return
 
     mark = state['mark']
@@ -56,6 +63,12 @@ def tap(x, y):
         state['pairs'] += 1
         print(f"Parejas descubiertas: {state['pairs']}")
         title(f"Memory - Parejas descubiertas: {state['pairs']}/32")
+
+        # Comprueba si todas las fichas están descubiertas.
+        if not any(hide):
+            state['finished'] = True
+            print("¡Felicidades! Descubriste todas las parejas.")
+            title("Memory - ¡Juego completado!")
 
 
 def draw():
@@ -79,8 +92,17 @@ def draw():
         color('black')
         write(tiles[mark], font=('Arial', 30, 'normal'))
 
+    # Muestra un mensaje cuando se completa el juego.
+    if state['finished']:
+        up()
+        goto(0, -15)
+        color('green')
+        write("¡Ganaste!", align='center', font=('Arial', 30, 'bold'))
+
     update()
-    ontimer(draw, 100)
+
+    if not state['finished']:
+        ontimer(draw, 100)
 
 
 shuffle(tiles)
