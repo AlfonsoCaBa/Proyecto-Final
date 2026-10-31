@@ -1,14 +1,6 @@
 
 """Juego de gato (Tic Tac Toe).
 
-Ejercicios originales:
-
-1. Dar a las X y O diferentes colores y grosores.
-2. ¿Qué sucede cuando alguien selecciona una casilla ocupada?
-3. ¿Cómo detectar cuando alguien ha ganado?
-4. ¿Cómo crear un jugador controlado por la computadora?
-"""
-
 from turtle import *
 from freegames import line
 
