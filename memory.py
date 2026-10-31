@@ -1,5 +1,5 @@
 
-"""Memory, juego de memoria para encontrar parejas de números.
+"""Memory, juego de memoria para encontrar parejas de números."""
 
 from random import *
 from turtle import *
@@ -8,7 +8,7 @@ from freegames import path
 
 car = path('car.gif')
 tiles = list(range(32)) * 2
-state = {'mark': None}
+state = {'mark': None, 'pairs': 0}
 hide = [True] * 64
 
 
@@ -36,8 +36,13 @@ def xy(count):
 
 
 def tap(x, y):
-    """Actualiza la ficha seleccionada y las fichas ocultas según el clic."""
+    """Actualiza la ficha seleccionada y cuenta las parejas descubiertas."""
     spot = index(x, y)
+
+    # Ignora clics fuera del tablero o sobre fichas descubiertas.
+    if spot < 0 or spot >= 64 or not hide[spot]:
+        return
+
     mark = state['mark']
 
     if mark is None or mark == spot or tiles[mark] != tiles[spot]:
@@ -46,6 +51,11 @@ def tap(x, y):
         hide[spot] = False
         hide[mark] = False
         state['mark'] = None
+
+        # Incrementa el contador al encontrar una pareja.
+        state['pairs'] += 1
+        print(f"Parejas descubiertas: {state['pairs']}")
+        title(f"Memory - Parejas descubiertas: {state['pairs']}/32")
 
 
 def draw():
@@ -75,6 +85,7 @@ def draw():
 
 shuffle(tiles)
 setup(420, 420, 370, 0)
+title("Memory - Parejas descubiertas: 0/32")
 addshape(car)
 hideturtle()
 tracer(False)
