@@ -7,6 +7,8 @@ from freegames import line
 
 def grid():
     """Dibuja la cuadrícula del juego."""
+    color('black')
+    width(1)
     line(-67, 200, -67, -200)
     line(67, 200, 67, -200)
     line(-200, -67, 200, -67)
@@ -38,17 +40,59 @@ def floor(value):
     return ((value + 200) // 133) * 133 - 200
 
 
-state = {'player': 0}
+state = {'player': 0, 'finished': False}
 players = [drawx, drawo]
-occupied = set()  # Guarda las coordenadas de las casillas ocupadas.
+occupied = set()
+board = {}  # Guarda qué jugador ocupa cada casilla.
+
+
+def check_winner():
+    """Comprueba si existen tres símbolos iguales en línea."""
+    # Posibles combinaciones ganadoras: filas, columnas y diagonales.
+    combinations = [
+        [(0, 0), (1, 0), (2, 0)],
+        [(0, 1), (1, 1), (2, 1)],
+        [(0, 2), (1, 2), (2, 2)],
+        [(0, 0), (0, 1), (0, 2)],
+        [(1, 0), (1, 1), (1, 2)],
+        [(2, 0), (2, 1), (2, 2)],
+        [(0, 0), (1, 1), (2, 2)],
+        [(2, 0), (1, 1), (0, 2)]
+    ]
+
+    for combination in combinations:
+        a, b, c = combination
+
+        if a in board and b in board and c in board:
+            if board[a] == board[b] == board[c]:
+                return board[a]
+
+    return None
+
+
+def show_result(message):
+    """Muestra el resultado del juego en la ventana."""
+    state['finished'] = True
+    color('black')
+    up()
+    goto(0, -195)
+    write(message, align='center', font=('Arial', 14, 'bold'))
+    update()
 
 
 def tap(x, y):
-    """Dibuja una X o una O únicamente si la casilla está libre."""
+    """Realiza una jugada si la casilla está libre y el juego continúa."""
+    if state['finished']:
+        return
+
     x = floor(x)
     y = floor(y)
 
-    # Evita dibujar sobre una casilla que ya fue seleccionada.
+    # Evita seleccionar posiciones fuera del tablero.
+    if x not in (-200, -67, 66) or y not in (-200, -67, 66):
+        return
+
+    # Evita dibujar sobre una casilla ocupada.
     if (x, y) in occupied:
         return
 
@@ -56,10 +100,28 @@ def tap(x, y):
     draw = players[player]
     draw(x, y)
 
-    # Registra la casilla como ocupada.
     occupied.add((x, y))
 
+    # Convierte las coordenadas en índices de 0 a 2.
+    col = (x + 200) // 133
+    row = (y + 200) // 133
+    board[(col, row)] = player
+
     update()
+
+    # Comprueba si el jugador actual ganó.
+    winner = check_winner()
+
+    if winner is not None:
+        symbol = 'X' if winner == 0 else 'O'
+        show_result(f'¡Ganó el jugador {symbol}!')
+        return
+
+    # Si las nueve casillas están ocupadas y nadie ganó, hay empate.
+    if len(occupied) == 9:
+        show_result('¡Empate!')
+        return
+
     state['player'] = not player
 
 
